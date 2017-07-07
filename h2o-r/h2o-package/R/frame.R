@@ -38,8 +38,6 @@
 #-----------------------------------------------------------------------------------------------------------------------
 # Private/Internal Functions
 #-----------------------------------------------------------------------------------------------------------------------
-#library(slam)
-#library(data.table)
 is.H2OFrame <- function(fr)  base::`&&`(!missing(fr), class(fr)[1]=="H2OFrame") 
 chk.H2OFrame <- function(fr) if( is.H2OFrame(fr) ) fr else stop("must be an H2OFrame")
 # Horrible internal shortcut to set our fields, using a more "normal"
@@ -3240,9 +3238,9 @@ as.h2o.Matrix <- function(x, destination_frame="", ...) {
 
 }
 
-#' Convert a simple triplet matrix to svm format
-#' @author Peter Ellis
-#' @return a character vector of length n = nrow(stm)
+# Convert a simple triplet matrix to svm format
+# @author Peter Ellis
+# @return a character vector of length n = nrow(stm)
 .h2o.calc_stm_svm <- function(stm, y){
   # returns a character vector of length y ready for writing in svm format
   if(!"simple_triplet_matrix" %in% class(stm)){
@@ -3255,8 +3253,8 @@ as.h2o.Matrix <- function(x, destination_frame="", ...) {
 
 
   # data.table solution thanks to roland
-  rowLeft = setdiff(c(1:n), unique(stm$i))  # added two liner to return rows of zeros instead of repeating other rows
-  nrowLeft = length(rowLeft)
+  rowLeft <- setdiff(c(1:n), unique(stm$i))  # added two liner to return rows of zeros instead of repeating other rows
+  nrowLeft <- length(rowLeft)
 
   stm2 <- data.table(i = c(stm$i,rowLeft), j = c(stm$j,rep(1,nrowLeft)), v = c(stm$v,rep(0,nrowLeft)))
   res <- stm2[, .(i, jv = paste(j, v, sep = ":"))][order(i), .(res = paste(jv, collapse = " ")), by = i][["res"]]
@@ -3267,10 +3265,10 @@ as.h2o.Matrix <- function(x, destination_frame="", ...) {
 }
 
 
-#' @param stm a simple triplet matrix (class exported slam) of features (ie explanatory variables)
-#' @param y a vector of labels.  If not provided, a dummy of 1s is provided
-#' @param file file to write to.
-#' @author Peter Ellis
+# @param stm a simple triplet matrix (class exported slam) of features (ie explanatory variables)
+# @param y a vector of labels.  If not provided, a dummy of 1s is provided
+# @param file file to write to.
+# @author Peter Ellis
 .h2o.write_stm_svm <- function(stm, y = rep(1, nrow(stm)), file){
   out <- .h2o.calc_stm_svm(stm, y)
   writeLines(out, con = file)

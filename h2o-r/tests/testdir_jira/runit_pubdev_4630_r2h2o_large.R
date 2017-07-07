@@ -12,39 +12,39 @@ source("../../scripts/h2o-r-test-setup.R")
 # and the original matrix.
 
 check.as.h2o<- function() {
-  c2 = c(0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0)
-  h2o1 = c(0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0) # H2O answer
-  h2o2 = c(0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0) # H2O answer
-  m1 = matrix(0, nrow=6,ncol=5)
-  m1[4,1]=1
-  m1[4,4]= 1
-  m2 = matrix(c2, ncol=5)
-  h2oanswer1 = matrix(h2o1,nrow=6)
-  h2oanswer2 = matrix(h2o2,nrow=6)
+  c2 <- c(0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0)
+  h2o1 <- c(0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0) # H2O answer
+  h2o2 <- c(0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0) # H2O answer
+  m1 <- matrix(0, nrow=6,ncol=5)
+  m1[4,1]<-1
+  m1[4,4]<- 1
+  m2 <- matrix(c2, ncol=5)
+  h2oanswer1 <- matrix(h2o1,nrow=6)
+  h2oanswer2 <- matrix(h2o2,nrow=6)
   
   # check to make sure we read in the first sparse matrix correctly
   print("******  Checking to make sure new fix generate same h2o frame 1")
-  sparseM = Matrix(m1, sparse=TRUE) # convert matrix to sparse matrix
-  dr2h2oS = as.h2o(sparseM)
+  sparseM <- Matrix(m1, sparse=TRUE) # convert matrix to sparse matrix
+  dr2h2oS <- as.h2o(sparseM)
   compare_frames(h2oanswer1, dr2h2oS, 30) 
 
   # check to make sure we read in the second sparse matrix correctly
   print("******  Checking to make sure new fix generate same h2o frame 2")
-  sparseM = Matrix(m2, sparse=TRUE) # convert matrix to sparse matrix
-  dr2h2oS = as.h2o(sparseM)
+  sparseM <- Matrix(m2, sparse=TRUE) # convert matrix to sparse matrix
+  dr2h2oS <- as.h2o(sparseM)
   compare_frames(h2oanswer2, dr2h2oS, 30) 
   
   # work with randomly generated matrices and check the execution time and number of ones
   print("******  Running random matrix test to check execution time...")
-  nRow = 90000
-  nCol = 1000
-  probOne = 0.0001   # generate sparse matrix here
+  nRow <- 90000
+  nCol <- 1000
+  probOne <- 0.0001   # generate sparse matrix here
   m <- matrix(rbinom(nRow*nCol, 1, probOne), ncol = nCol)
   
   print("Time taking to convert sparse matrix using as.h2o is ")
-  ptm = proc.time()
-  dr2h2oD = as.h2o(Matrix(m, sparse=TRUE))
-  timepassedD = proc.time()-ptm
+  ptm <- proc.time()
+  dr2h2oD <- as.h2o(Matrix(m, sparse=TRUE))
+  timepassedD <- proc.time()-ptm
   print(timepassedD)
   expect_equal(sum(sum(m==1)), sum(sum(dr2h2oD)))
 }
@@ -53,17 +53,17 @@ compare_frames <- function(f1, f2, number2Comp) {
   expect_equal(ncol(f1), ncol(f2))
   expect_equal(nrow(f1), nrow(f2))
   
-  col_ind = sample(c(1:ncol(f1)))
-  row_ind = sample(c(1:nrow(f1)))
-  col_ind = c(1:ncol(f1))
-  row_ind = c(1:nrow(f1))
+  col_ind <- sample(c(1:ncol(f1)))
+  row_ind <- sample(c(1:nrow(f1)))
+  col_ind <- c(1:ncol(f1))
+  row_ind <- c(1:nrow(f1))
   
-  counter=1
+  counter<-1
   
   for (cind in col_ind) {
     for (rind in row_ind) {
       expect_equal(f1[rind, cind], f2[rind, cind])
-      counter = counter+1
+      counter <- counter+1
       if (counter > number2Comp)
         return
     }
